@@ -2,7 +2,7 @@ from django.db import models
 
 
 class User(models.Model):
-    username = models.CharField(max_length=50, primary_key=True)
+    email = models.EmailField(max_length=100, primary_key=True)
     name = models.CharField(max_length=60)
     password = models.CharField(max_length=255)
     roll_no = models.CharField(max_length=15, blank=True, null=True)
@@ -19,8 +19,8 @@ class User(models.Model):
                               blank=True, null=True)
 
     def __str__(self):
-        return '<{0}>'.format(self.username)
+        return '<{0} {1}>'.format(self.name, self.email)
 
     class Meta:
         verbose_name_plural = 'Users'
-        ordering = ['username']
+        ordering = ['name']
