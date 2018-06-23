@@ -1,5 +1,6 @@
 from django.db import models
 
+import datetime
 
 class User(models.Model):
     email = models.EmailField(max_length=100, primary_key=True)
@@ -24,3 +25,20 @@ class User(models.Model):
     class Meta:
         verbose_name_plural = 'Users'
         ordering = ['name']
+
+    
+    @classmethod
+    def create(cls, email, name, password, dobday, dobmonth, dobyear, branch, roll_no=None):
+        try:
+            dob = datetime.date(year=dobyear, month=dobmonth, day=dobday)
+            x = cls(email=email,
+                    name=name,
+                    password=password,
+                    roll_no=roll_no,
+                    date_of_birth=dob,
+                    branch=branch
+                   )
+            x.save()
+        
+        except Exception as e:
+            print(e)
