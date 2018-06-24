@@ -47,4 +47,31 @@ def register(request):
     else:
         return JsonResponse({'Error': 'Invalid request'}, status=405)
 
+
 # TODO: Write endpoint for login and to setSession.
+
+@csrf_exempt
+def login(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+            if User.objects.filter(email=data['email']).exists():
+                try:
+                    user = User.login(data['email'], data['password'])
+                    if user:
+                        request.session['logged_in'] = True
+                        return JsonResponse({'Success': True})
+                    else:
+                        return JsonResponse({'Error': 'Invalid password'}, status=403)
+                except Exception as e:
+                    # To be changed during production
+                    print(e)
+                    return JsonResponse({'Error': 'Could not log in'}, status=403)
+            else:
+                return JsonResponse({'Error': 'User not registered'}, status=400)
+        except Exception as e:
+            # To be changed during production
+            print(e)
+            return JsonResponse({'Error': 'Something unexpected happened'}, status=500)
+    else:
+        return JsonResponse({'Error': 'Invalid request'}, status=403)
