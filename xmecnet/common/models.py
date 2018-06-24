@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
 
 import datetime
 
@@ -33,12 +34,24 @@ class User(models.Model):
             dob = datetime.date(year=dobyear, month=dobmonth, day=dobday)
             x = cls(email=email,
                     name=name,
-                    password=password,
+                    password=make_password(password),
                     roll_no=roll_no,
                     date_of_birth=dob,
                     branch=branch
                    )
             x.save()
         
+        except Exception as e:
+            print(e)
+
+    @classmethod
+    def login(cls, email, password):
+        try:
+            x = cls.objects.get(email=email)
+            if check_password(password, x.password):
+                return x
+            else:
+                return False
+
         except Exception as e:
             print(e)
