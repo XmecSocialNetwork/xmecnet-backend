@@ -27,20 +27,21 @@ class User(models.Model):
         verbose_name_plural = 'Users'
         ordering = ['name']
 
-    
+
     @classmethod
     def create(cls, email, name, password, dobday, dobmonth, dobyear, branch, roll_no=None):
         try:
             dob = datetime.date(year=dobyear, month=dobmonth, day=dobday)
             x = cls(email=email,
                     name=name,
-                    password=make_password(password),
+                    #password=make_password(password),
+                    password=password,
                     roll_no=roll_no,
                     date_of_birth=dob,
                     branch=branch
                    )
             x.save()
-        
+
         except Exception as e:
             print(e)
 
@@ -48,7 +49,8 @@ class User(models.Model):
     def login(cls, email, password):
         try:
             x = cls.objects.get(email=email)
-            if check_password(password, x.password):
+            print (password)
+            if check_password(password,x.password):
                 return x
             else:
                 return False

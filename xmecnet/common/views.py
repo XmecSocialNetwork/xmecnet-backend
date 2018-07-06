@@ -13,7 +13,7 @@ def register(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body.decode("utf-8"))
-            
+            print(data)
             if 'roll_no' not in data:
                 data['roll_no'] = None
 
@@ -28,8 +28,8 @@ def register(request):
                                        branch=data['branch'],
                                        roll_no = data['roll_no']
                                      )
-            
-                    
+
+
                     return JsonResponse({'Success': True})
 
                 except Exception as e:
@@ -55,11 +55,16 @@ def login(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body.decode("utf-8"))
+
+            
+            print(data)
             if User.objects.filter(email=data['email']).exists():
                 try:
                     user = User.login(data['email'], data['password'])
+                    print(user)
                     if user:
                         request.session['logged_in'] = True
+                        print (user)
                         return JsonResponse({'Success': True})
                     else:
                         return JsonResponse({'Error': 'Invalid password'}, status=403)
