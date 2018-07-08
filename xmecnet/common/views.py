@@ -1,9 +1,10 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password
-
+from django.core.mail import send_mail
 from .models import User
 
+import random
 import datetime
 import json
 
@@ -56,7 +57,7 @@ def login(request):
         try:
             data = json.loads(request.body.decode("utf-8"))
 
-            
+
             print(data)
             if User.objects.filter(email=data['email']).exists():
                 try:
@@ -80,3 +81,23 @@ def login(request):
             return JsonResponse({'Error': 'Something unexpected happened'}, status=500)
     else:
         return JsonResponse({'Error': 'Invalid request'}, status=403)
+
+@csrf_exempt
+def otp(request):
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+        print(data)
+        request.session["otp"]=random.randint(1001,9999)
+        send_mail(
+        'OTP from Xmec Network',
+        'Hello Mecian,We are glad to see you back.Enter this Verification code '+str(request.session["otp"])+'in the app to continue ',
+        'jeswincyriac.k@gmail.com',
+        [data["email"]],
+        fail_silently=False,
+        )
+
+        return JsonResponse({'OTPsenttomail ': True})
+    except Exception as e:
+        # To be changed during production
+        print(e)
+        return JsonResponse({'Error': 'Something unexpected happened'}, status=500)
