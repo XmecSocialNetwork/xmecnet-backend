@@ -116,11 +116,29 @@ def otp(request):
 @csrf_exempt
 def isloggedin(request):
     try:
+        print(request.session["logged_in"])
         return JsonResponse({"logged_in":request.session["logged_in"]})
     except Exception as e:
         # To be changed during production
         print(e)
         return JsonResponse({'status': 'Failed'}, status=500)
+
+@csrf_exempt
+def logout(request):
+    try:
+        request.session["logged_in"]=False
+        request.session.flush()
+        return JsonResponse({"status":"logoutsuccessfull"})
+    except Exception as e:
+        # To be changed during production
+        print(e)
+        return JsonResponse({'status': 'Failed'}, status=500)
+
+
+
+
+
+
 @csrf_exempt
 def trying(request):
     try:
