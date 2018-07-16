@@ -124,6 +124,7 @@ def isloggedin(request):
         return JsonResponse({'status': 'Failed'}, status=500)
 
 @csrf_exempt
+@is_logged_in
 def logout(request):
     try:
         request.session["logged_in"]=False
@@ -134,6 +135,18 @@ def logout(request):
         print(e)
         return JsonResponse({'status': 'Failed'}, status=500)
 
+@csrf_exempt
+@is_logged_in
+def search(request):
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+        print(data)
+
+        return JsonResponse({"status":"successfull"})
+    except Exception as e:
+        # To be changed during production
+        print(e)
+        return JsonResponse({'status': 'Failed'}, status=500)
 
 
 
